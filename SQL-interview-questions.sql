@@ -31,7 +31,7 @@ Select
 	limit 5;
 
 
--- 3. Top 3 most sales generating product in each category
+-- 4. Top 3 most sales generating product in each category
 With CTE_group_by_category_and_product_id as
 (
 	Select 

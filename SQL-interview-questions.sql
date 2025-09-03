@@ -1,5 +1,7 @@
 ------------------------------------------- Problem statements and their solutions ---------------------------------------------------
 
+-- VARIATION 1 : Retrieve highest salary
+
 -- 1. Top 2 employees with highest salary
 Select 
 	* 
@@ -50,5 +52,14 @@ Select *
 		where row_num <= 3;
 
 
-
+-- 5. 2nd highest salary 
+Select 
+	emp_id, emp_name, salary
+	from Employee
+	where salary = (
+					Select 
+						max(salary) second_highest_salary
+						from Employee
+						where salary < ( Select max(salary) from Employee)
+					)
 

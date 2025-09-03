@@ -63,3 +63,16 @@ Select
 						where salary < ( Select max(salary) from Employee)
 					)
 
+-- 6. 2nd highest salary department wise
+Select 
+	emp2.department_id, max(emp2.salary) second_highest_salary
+	from Employee emp2
+	where emp2.salary < (
+							Select 
+								max(salary)
+								from Employee
+								where department_id = emp2.department_id
+						)
+	group by emp2.department_id;
+
+

@@ -30,4 +30,25 @@ Select
 	order by 2 desc
 	limit 5;
 
-	
+
+-- 3. Top 3 most sales generating product in each category
+With CTE_group_by_category_and_product_id as
+(
+	Select 
+		category, 
+		product_id, 
+		sum(sales) over(partition by category, product_id) net_sales_per_product 
+		from Orders 
+)
+Select * 
+	from (
+			Select 
+				category, product_id, net_sales_per_product, 
+				row_number() over(partition by category order by net_sales_per_product desc) row_num
+				from CTE_group_by_category_and_product_id
+		) aggregated_sales_table 
+		where row_num <= 3;
+
+
+
+

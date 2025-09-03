@@ -21,3 +21,13 @@ Select
 	from CTE_department_id_as_window
 	where row_num <= 2;
 
+
+-- 3. Top 5 most sales generating product
+Select 
+	product_id, sum(sales) sales
+	from Orders 
+	group by product_id 
+	order by 2 desc
+	limit 5;
+
+	

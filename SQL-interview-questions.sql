@@ -1,6 +1,6 @@
 ------------------------------------------- Problem statements and their solutions ---------------------------------------------------
 
--- VARIATION 1 : Retrieve highest salary
+-- VARIATION 1 : Retrieve highest salary (to check "group by", "patrition by", "CTE" concepts)
 
 -- 1. Top 2 employees with highest salary
 Select 
@@ -74,5 +74,30 @@ Select
 								where department_id = emp2.department_id
 						)
 	group by emp2.department_id;
+
+
+-- VARIATION 2 : YOY growth (to check "LEAD/LAG" function concepts)
+
+-- 7. Find YOY growth for all the years
+With CTE_current_year_net_sales as 
+(
+	Select 
+		extract(year from order_date) calander_year, sum(sales) current_year_sales 
+		from orders
+		group by 1
+		order by 1
+), 
+CTE_previous_year_net_sales as
+(
+	Select
+		calander_year, 
+		current_year_sales,
+		lag(current_year_sales, 1, current_year_sales) over(order by calander_year) previous_year_sales
+		from CTE_current_year_net_sales
+)
+Select 
+	*, 
+	round((current_year_sales - previous_year_sales) / previous_year_sales * 100, 2) YOY_sales_percent
+	from CTE_previous_year_net_sales;
 
 

@@ -101,3 +101,27 @@ Select
 	from CTE_previous_year_net_sales;
 
 
+-- 8. Find YOY growth for all the years by category
+With CTE_current_year_net_sales as 
+(
+	Select 
+		category, extract(year from order_date) calander_year, sum(sales) current_year_sales 
+		from orders
+		group by 1, 2
+		order by 1, 2
+), 
+CTE_previous_year_net_sales as
+(
+	Select
+		category, 
+		calander_year, 
+		current_year_sales,
+		lag(current_year_sales, 1, current_year_sales) over(partition by category order by calander_year) previous_year_sales
+		from CTE_current_year_net_sales
+)
+Select 
+	*, 
+	round((current_year_sales - previous_year_sales) / previous_year_sales * 100, 2) YOY_sales_percent
+	from CTE_previous_year_net_sales;
+
+

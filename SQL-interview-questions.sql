@@ -125,3 +125,38 @@ Select
 	from CTE_previous_year_net_sales;
 
 
+-- 9. Find products with current month sales more than previous month sales
+With CTE_current_month_sales as 
+(
+	Select 
+		product_id, 
+		extract(year from order_date) calander_year, 
+		extract(month from order_date) calander_month,
+		sum(sales) current_month_sales 
+		from orders
+		where order_date >= '2021-01-01'
+		group by 1, 2, 3
+		order by 1, 2, 3 desc
+), 
+CTE_previous_year_net_sales as
+(
+	Select
+		product_id, 
+		calander_year, 
+		calander_month, 
+		current_month_sales,
+		lead(current_month_sales, 1, current_month_sales) over(partition by product_id order by calander_year) previous_month_sales
+		from CTE_current_month_sales
+)
+Select 
+	*, 
+	CASE
+		when (current_month_sales > previous_month_sales) 
+		then 'Positive monthly growth'
+		when (current_month_sales < previous_month_sales) 
+		then 'Negative monthly growth'
+		else 'No growth'
+	END Monthly_growth_indicator
+	from CTE_previous_year_net_sales;
+
+

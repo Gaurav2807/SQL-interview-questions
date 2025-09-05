@@ -190,4 +190,22 @@ Select
 	*, 
 	sum(yearly_sales) over(partition by category order by calander_year) cummulative_sales
 	from CTE_yearly_sales;
-	
+
+
+-- 12. Rolling 3 months sales
+With CTE_yearly_sales as
+(
+	Select
+		extract(year from order_date) calander_year, 
+		extract(month from order_date) calander_month, 
+		sum(sales) yearly_sales 
+		from Orders 
+		group by 1, 2
+		order by 1, 2
+)
+Select 
+	*, 
+	sum(yearly_sales) over(partition by calander_year order by calander_year, calander_month rows between 2 preceding and current row) cummulative_sales
+	from CTE_yearly_sales;
+
+

@@ -138,7 +138,7 @@ With CTE_current_month_sales as
 		group by 1, 2, 3
 		order by 1, 2, 3 desc
 ), 
-CTE_previous_year_net_sales as
+CTE_previous_month_sales as
 (
 	Select
 		product_id, 
@@ -157,6 +157,21 @@ Select
 		then 'Negative monthly growth'
 		else 'No growth'
 	END Monthly_growth_indicator
-	from CTE_previous_year_net_sales;
+	from CTE_previous_month_sales;
 
+
+-- 10. Cummulative sales / running / rolling 'N' months or years sales
+With CTE_yearly_sales as
+(
+	Select
+		extract(year from order_date) calander_year, 
+		sum(sales) yearly_sales 
+		from Orders 
+		group by 1
+)
+Select 
+	*, 
+	sum(yearly_sales) over(order by calander_year)
+	from CTE_yearly_sales;
+	
 

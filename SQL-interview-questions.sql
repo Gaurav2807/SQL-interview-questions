@@ -171,7 +171,23 @@ With CTE_yearly_sales as
 )
 Select 
 	*, 
-	sum(yearly_sales) over(order by calander_year)
+	sum(yearly_sales) over(order by calander_year) cummulative_sales
 	from CTE_yearly_sales;
 	
 
+-- 11. Cummulative sales / running / rolling 'N' months or years sales by category 
+With CTE_yearly_sales as
+(
+	Select
+		category, 
+		extract(year from order_date) calander_year, 
+		sum(sales) yearly_sales 
+		from Orders 
+		group by 1, 2
+		order by 1, 2
+)
+Select 
+	*, 
+	sum(yearly_sales) over(partition by category order by calander_year) cummulative_sales
+	from CTE_yearly_sales;
+	

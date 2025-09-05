@@ -158,9 +158,11 @@ Select
 		else 'No growth'
 	END Monthly_growth_indicator
 	from CTE_previous_month_sales;
+	
 
+-- VARIATION 3 : Cummulative sales / running / rolling 'N' months or years sales (to check 'windows functions' working, specially 'order by' in it)
 
--- 10. Cummulative sales / running / rolling 'N' months or years sales
+-- 10. Find cummulative year sales
 With CTE_yearly_sales as
 (
 	Select
@@ -175,7 +177,7 @@ Select
 	from CTE_yearly_sales;
 	
 
--- 11. Cummulative sales / running / rolling 'N' months or years sales by category 
+-- 11. Find cummulative year sales by category 
 With CTE_yearly_sales as
 (
 	Select
@@ -208,4 +210,16 @@ Select
 	sum(yearly_sales) over(partition by calander_year order by calander_year, calander_month rows between 2 preceding and current row) cummulative_sales
 	from CTE_yearly_sales;
 
+
+-- VARIATION 4 : Pivoting -> Convert rows to columns 
+
+-- 13. Sales by category per year side by side
+Select  
+	extract(year from order_date) calander_year,
+	sum(case when category = 'Furniture' then sales else 0 end) Furniture_sales, 
+	sum(case when category = 'Office Supplies' then sales else 0 end) Office_supplies_sales, 
+	sum(case when category = 'Technology' then sales else 0 end) Technology_sales 
+	from orders 
+	group by 1
+	
 

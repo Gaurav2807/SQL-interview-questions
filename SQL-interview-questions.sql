@@ -232,6 +232,34 @@ Select
 	inner join Friend F
 	on P.personid = F.pid
 	Group by 1, 2
-	having sum(P.Score) > 100
+	having sum(P.Score) > 100;
+
+
+-- 15. Management wants to see all the users that haven't logged in in past 5 months (returns : Username)
+Select 
+	U.user_name User_name 
+	from users U 
+	inner join 
+	(
+		Select 
+			user_id, max(login_timestamp) last_login
+			from logins
+			group by 1
+			having max(login_timestamp) < (Select max(login_timestamp) from logins) - interval '5 months'
+	) L
+	on L.user_id = U.user_id;
+	
+-----------------------------------------------------------------  OR --------------------------------------------------------------
+									
+Select 
+	distinct user_id
+	from logins 
+	where user_id not in 
+	(
+		Select 
+			user_id 
+			from logins 
+			where login_timestamp > (Select max(login_timestamp) from logins) - interval '5 months'
+	)
 
 

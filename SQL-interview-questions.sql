@@ -211,7 +211,7 @@ Select
 	from CTE_yearly_sales;
 
 
--- VARIATION 4 : Pivoting -> Convert rows to columns 
+-- VARIATION 4 : Pivoting -> Convert rows to columns (to check the interviewee's understanding of arrangement of data)
 
 -- 13. Sales by category per year side by side
 Select  
@@ -222,4 +222,16 @@ Select
 	from orders 
 	group by 1
 	
+
+-- VARIATION 5 : Result of inner / left joins etc.
+
+-- 14. Write a query to find PersonID, Name, Number of friends, sum of marks of person who have friends with total score greater than 100
+Select 
+	P.PersonID Person_ID, P.Name Person_name, count(*) Total_friends, sum(P.Score) Friends_score 
+	from Person P 
+	inner join Friend F
+	on P.personid = F.pid
+	Group by 1, 2
+	having sum(P.Score) > 100
+
 

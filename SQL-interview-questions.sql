@@ -264,8 +264,6 @@ Select
 
 
 -- 16. For the Business unit's quarterly analysis, calculate how many users and how many sessions were there at each quarter, order by quarter from newest to older (returns : First day of quarter, user_count, session_count)
-Select * from logins
-
 With CTE_Quarters as 
 (
 	Select 
@@ -286,5 +284,14 @@ Select
 	from CTE_Quarters 
 	group by Quarters 
 	order by Quarters desc;
+
+
+-- 17. Display user IDs that logged in in January 2024 but not in November 2023 (returns : User_id)
+Select 
+	distinct user_id 
+	from logins 
+	where login_timestamp between '2024-01-01' and '2024-01-31' 
+	and user_id not in (Select distinct user_id from logins where login_timestamp between '2023-11-01' and '2023-11-30')
+
 
 

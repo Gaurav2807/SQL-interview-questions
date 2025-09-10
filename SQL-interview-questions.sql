@@ -263,3 +263,28 @@ Select
 	)
 
 
+-- 16. For the Business unit's quarterly analysis, calculate how many users and how many sessions were there at each quarter, order by quarter from newest to older (returns : First day of quarter, user_count, session_count)
+Select * from logins
+
+With CTE_Quarters as 
+(
+	Select 
+		user_id, login_timestamp, session_id, 
+		CASE 
+			when extract(month from login_timestamp) between 1 and 3 then 'Q1'  
+			when extract(month from login_timestamp) between 4 and 6 then 'Q2' 
+			when extract(month from login_timestamp) between 7 and 9 then 'Q3' 
+			when extract(month from login_timestamp) between 10 and 12 then 'Q4' 
+		END	Quarters 
+		from logins
+)
+Select 
+	Quarters, 
+	DATE_TRUNC('month', min(login_timestamp)) first_day_of_quarter, 
+	count(distinct user_id) user_count, 
+	count(session_id) session_count
+	from CTE_Quarters 
+	group by Quarters 
+	order by Quarters desc;
+
+

@@ -331,3 +331,16 @@ Select *
 	where rn = 1;
 
 
+-- 20. To identify the users that had a session for every single day since their first login [make assumption is needed] (return : user_id)
+Select 
+	user_id, 
+	min(login_timestamp) :: date first_login, 
+	current_date - (min(login_timestamp) :: date) date_difference, 
+	count(distinct login_timestamp) distinct_logins_within_day
+	from logins 
+	group by user_id 
+	having count(distinct login_timestamp) = current_date - (min(login_timestamp) :: date);
+
+
+
+

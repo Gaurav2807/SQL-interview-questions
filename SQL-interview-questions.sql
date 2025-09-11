@@ -310,3 +310,24 @@ Select
 	from CTE_Session_count_per_quarter;
 
 
+-- 19. Display the user that had the highest session score each day (return : Date, user_name, score)
+With CTE_max_session as 
+(
+Select 
+	user_id, 
+	login_timestamp, 
+	max(session_score) 
+	from logins
+	group by login_timestamp, user_id	
+)
+Select * 
+	from 
+		(
+			Select 
+				*, 
+				row_number() over(partition by login_timestamp) rn 
+				from CTE_max_session
+		)
+	where rn = 1;
+
+

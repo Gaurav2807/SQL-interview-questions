@@ -294,4 +294,19 @@ Select
 	and user_id not in (Select distinct user_id from logins where login_timestamp between '2023-11-01' and '2023-11-30')
 
 
+-- 18. Display percentage change in Sessions from the last quarter (returns : First day of quarter, Current session count, Previous session count, Percentage change in sessions)
+With CTE_Session_count_per_quarter as
+(
+	Select  
+		DATE_TRUNC('month', min(login_timestamp)) first_day_of_quarter, 
+		count(session_id) current_quarter_session_count
+		from logins
+		group by date_trunc('quarter', login_timestamp) /*date trunc gets you first day of the parameter passed*/
+)
+Select 
+	*, 
+	LAG(current_quarter_session_count, 1) over(order by first_day_of_quarter) previous_quarter_session_count, 
+	(current_quarter_session_count - (LAG(current_quarter_session_count, 1) over(order by first_day_of_quarter))) * 100 / (LAG(current_quarter_session_count, 1) over(order by first_day_of_quarter))  percentage_change
+	from CTE_Session_count_per_quarter;
+
 

@@ -390,3 +390,21 @@ Select
 	order by first_login;
 
 
+-- 24. Count all the users that were acquired in Jan 2025 and only placed one order in Jan and did not place any other order
+With CTE_January_acquired_customers as 
+(
+	Select 
+		customer_code, 
+		min(placed_at) over(partition by customer_code):: date first_login, 
+		placed_at :: date all_login_dates
+		from dubai_food_orders 
+)
+Select 
+	customer_code,  
+	count(*) no_of_orders_placed
+	from CTE_January_acquired_customers
+	where first_login between '2025-01-01' and '2025-01-31'
+	group by customer_code 
+	having count(*) = 1
+
+

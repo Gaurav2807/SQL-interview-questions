@@ -354,8 +354,6 @@ Select
 -- =============================================================================================================================== --
 
 -- 22. Find top 3 outlets by cuisine type without using limit and top function
-Select * from dubai_food_orders
-
 With CTE_order_count as 
 (
 	Select 
@@ -374,4 +372,21 @@ Select
 	)
 	where rn <= 3;
 	
+
+-- 23. Find daily new customer count from the launch date (Everyday how many new customers are we acquiring)
+With CTE_first_login_date as 
+(
+	Select 
+		customer_code, min(placed_at) :: date first_login
+		from 
+		dubai_food_orders
+		group by customer_code
+)
+Select 
+	first_login, 
+	count(*) new_customers
+	from CTE_first_login_date
+	group by first_login 
+	order by first_login;
+
 

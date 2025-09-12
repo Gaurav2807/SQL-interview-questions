@@ -351,4 +351,27 @@ Select
 	on calander.all_dates = L.login_dates :: date 
 	where L.login_dates is null;
 
+-- =============================================================================================================================== --
+
+-- 22. Find top 3 outlets by cuisine type without using limit and top function
+Select * from dubai_food_orders
+
+With CTE_order_count as 
+(
+	Select 
+		cuisine, restaurant_id, count(*) cnt 
+		from dubai_food_orders 
+		group by cuisine, restaurant_id
+)
+Select 
+	* 
+	from
+	(
+		Select 
+			cuisine, restaurant_id, cnt, 
+			row_number() over(partition by cuisine order by cnt desc) rn
+			from CTE_order_count
+	)
+	where rn <= 3;
+	
 

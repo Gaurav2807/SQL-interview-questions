@@ -342,5 +342,13 @@ Select
 	having count(distinct login_timestamp) = current_date - (min(login_timestamp) :: date);
 
 
+-- 21. On what dates there were no logins at all ? (return : login_dates)
+Select 
+	calander.all_dates
+	from 
+	(Select distinct login_timestamp :: date login_dates from logins) L
+	right join (select generate_series('2023-07-15' :: date, '2024-06-28' :: date, '1 day' :: interval) :: date all_dates) calander 
+	on calander.all_dates = L.login_dates :: date 
+	where L.login_dates is null;
 
 

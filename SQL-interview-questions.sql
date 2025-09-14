@@ -408,3 +408,24 @@ Select
 	having count(*) = 1
 
 
+-- 25. List all the customers with no orders in last 7 days but were acquired one month ago with their first order on promo
+With CTE_January_acquired_customers as 
+(
+	Select 
+		customer_code, 
+		min(placed_at):: date first_login, 
+		max(placed_at):: date max_date 
+		from dubai_food_orders 
+		group by customer_code
+)
+Select 
+CTE_January_acquired_customers.*, dubai_food_orders.promo_code_name
+from CTE_January_acquired_customers 
+inner join dubai_food_orders 
+on dubai_food_orders.customer_code = CTE_January_acquired_customers.customer_code 
+and CTE_January_acquired_customers.first_login = dubai_food_orders.placed_at :: date
+where max_date < current_date - interval '7 days' 
+and first_login < current_date - interval '1 month' 
+and promo_code_name is not null;
+
+

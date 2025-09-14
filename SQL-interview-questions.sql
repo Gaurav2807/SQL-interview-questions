@@ -463,3 +463,22 @@ Select
 	and no_of_orders = no_of_promo_code;
 
 
+-- 28. What percent of customers were organically acquired in January 2025 (i.e. who placed the first order without a promo code)
+With CTE_first_login as 
+(
+	Select 
+		customer_code, 
+		promo_code_name, 
+		row_number() over(partition by customer_code) rn
+		from dubai_food_orders
+)
+Select 
+	Round
+	(
+		count
+		(
+			CASE when rn = 1 and promo_code_name is null then customer_code end
+		) * 100.0 / count(distinct customer_code)
+	, 2) orgnic_customers_percentage
+	from CTE_first_login
+

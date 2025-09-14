@@ -429,3 +429,21 @@ and first_login < current_date - interval '1 month'
 and promo_code_name is not null;
 
 
+-- 26. Write a query to create a trigger that will target customers after their every third order with a personalised communication
+Select * from dubai_food_orders
+
+with cte as 
+(
+	Select 
+		order_id, customer_code, placed_at :: date,   
+		row_number() over(partition by customer_code order by placed_at) rn 
+		from dubai_food_orders
+)
+Select 
+	*, 
+	CASE when rn % 3 = 0 then 'Thanks for ordering' END
+	from CTE
+	where rn % 3 = 0 
+	and placed_at :: date = current_date :: date /*So the customers who have made orders earlier doesn't get spammed with messages*/
+
+

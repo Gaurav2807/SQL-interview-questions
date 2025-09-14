@@ -432,7 +432,7 @@ and promo_code_name is not null;
 -- 26. Write a query to create a trigger that will target customers after their every third order with a personalised communication
 Select * from dubai_food_orders
 
-with cte as 
+with CTE_order_triplets as 
 (
 	Select 
 		order_id, customer_code, placed_at :: date,   
@@ -442,8 +442,24 @@ with cte as
 Select 
 	*, 
 	CASE when rn % 3 = 0 then 'Thanks for ordering' END
-	from CTE
+	from CTE_order_triplets
 	where rn % 3 = 0 
 	and placed_at :: date = current_date :: date /*So the customers who have made orders earlier doesn't get spammed with messages*/
+
+
+-- 27. List all the customers who placed more than 1 order and all their orders on a promo only
+With CTE_order_promo_count as 
+(
+	Select 
+		customer_code, 
+		count(order_id) over(partition by customer_code) no_of_orders, 
+		count(promo_code_name) over(partition by customer_code) no_of_promo_code
+		from dubai_food_orders 
+)
+Select 
+	customer_code, no_of_orders, no_of_promo_code 
+	from CTE_order_promo_count 
+	where no_of_orders > 1 
+	and no_of_orders = no_of_promo_code;
 
 

@@ -1,5 +1,5 @@
 # SQL-interview-questions
-![SQL Interview Questions SS]
+![SQL Interview Questions SS](https://github.com/Gaurav2807/SQL-interview-questions/blob/main/SQL%20Interview%20Questions%20SS.png)
 
 This repository contains problem statement and their solutions which could be useful for SQL based interviews.
 

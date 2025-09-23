@@ -491,3 +491,14 @@ Select
 	2. Wallet cash back (paytm / gpay)
 	3. Zomato pro / Swiggy super
 */
+
+-- 29. Calculate the number of customers retained in current month
+	Select 
+		extract(month from current_month.order_date) month_name, count(previous_month.order_date) repeated_customers 
+		from Transactions current_month 
+		left join Transactions previous_month 
+		on previous_month.cust_id = current_month.cust_id 
+		and extract(month from current_month.order_date) - extract(month from previous_month.order_date) = 1 
+		group by extract(month from current_month.order_date);
+
+

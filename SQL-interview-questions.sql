@@ -483,4 +483,11 @@ Select
 	from CTE_first_login
 
 -- =============================================================================================================================== --
--- Customer retentiona and customer churn metrics
+-- Customer retention and customer churn metrics
+/*
+	It is a company's ability to turn customers into repeat buyers and prevent them from switching to competitors
+	It indicates whether your product or quality of your service pleases your existing customers like 
+	1. Reward programmes 
+	2. Wallet cash back (paytm / gpay)
+	3. Zomato pro / Swiggy super
+*/

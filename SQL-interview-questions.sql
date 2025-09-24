@@ -502,3 +502,14 @@ Select
 		group by extract(month from current_month.order_date);
 
 
+-- 30. Calculate teh number of customers lost this month
+	Select 
+		extract(month from previous_month.order_date) month_name, count(distinct previous_month.cust_id) customers_lost 
+		from Transactions current_month 
+		right join Transactions previous_month 
+		on previous_month.cust_id = current_month.cust_id 
+		and extract(month from current_month.order_date) - extract(month from previous_month.order_date) = 1 
+		where current_month.cust_id is null
+		group by extract(month from previous_month.order_date)
+
+
